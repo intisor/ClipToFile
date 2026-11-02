@@ -1,0 +1,13 @@
+{
+  "name": "clipai-worker",
+  "version": "1.0.0",
+  "description": "Universal Clipboard-to-File & AI Chat Hub for PC and Web",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "watch": "node server.js --watch"
+  },
+  "keywords": ["clipboard", "gemini", "ai-chat", "productivity", "file-sync"],
+  "author": "",
+  "license": "MIT"
+}

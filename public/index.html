@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClipToFile - Paste Clipboard as File in AI Web</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur px-6 py-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i data-lucide="file-up" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg text-white tracking-tight">ClipToFile</h1>
+          <p class="text-xs text-slate-400">Copy anything & paste as a real file in Gemini Web, ChatGPT, or Claude</p>
+        </div>
+      </div>
+
+      <a href="https://gemini.google.com/app" target="_blank" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-xs font-medium text-indigo-300 transition">
+        <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
+        <span>Open Gemini Web</span>
+        <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400/60"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-6 flex flex-col gap-6">
+
+    <!-- Hero / How It Works Banner -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- Option 1: Native PC Worker -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-indigo-400 font-semibold text-sm">
+            <i data-lucide="cpu" class="w-4 h-4"></i>
+            <span>Option 1: Windows Auto-Worker</span>
+            <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Fastest</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Double-click <code class="text-indigo-300 bg-slate-950 px-1 py-0.5 rounded">start-worker.bat</code> on your PC. Whenever you copy any text or code, it silently puts it on your clipboard as a <strong>real file</strong>. Press <kbd class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-200">Ctrl+V</kbd> in Gemini Web and it uploads as an attached file!
+          </p>
+        </div>
+        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+          <span>Folder: <code class="text-slate-300">clipboard-ai-worker</code></span>
+          <span class="text-emerald-400 font-medium">Ready in folder</span>
+        </div>
+      </div>
+
+      <!-- Option 2: Browser Drag & Drop / Web Helper -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-indigo-400 font-semibold text-sm">
+            <i data-lucide="mouse-pointer-click" class="w-4 h-4"></i>
+            <span>Option 2: Browser Drag & Drop</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Paste text below, and it instantly creates a <strong>Draggable File Chip</strong>. Grab and drop it directly onto your Gemini Web tab to attach it as a file upload!
+          </p>
+        </div>
+        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+          <span>Works in any web browser</span>
+          <span class="text-indigo-400 font-medium">Use below ↓</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Active Clipboard to File Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col gap-4">
+      
+      <!-- Controls Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">File Name & Type:</span>
+          <input type="text" id="file-name-input" value="clipboard_data" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500 w-36">
+          <select id="file-ext-select" class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500">
+            <option value="txt">.txt (Plain Text / Notes)</option>
+            <option value="py">.py (Python)</option>
+            <option value="js">.js (JavaScript)</option>
+            <option value="json">.json (JSON Data)</option>
+            <option value="md">.md (Markdown)</option>
+            <option value="csv">.csv (Spreadsheet Data)</option>
+            <option value="sql">.sql (SQL Query)</option>
+            <option value="html">.html (HTML)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btn-paste" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white transition active:scale-95 shadow-md shadow-indigo-600/20">
+            <i data-lucide="clipboard-paste" class="w-4 h-4"></i>
+            <span>Paste from Clipboard</span>
+          </button>
+          <button id="btn-clear" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="Clear">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Textarea Content -->
+      <textarea id="text-input" rows="8" placeholder="Paste your text, code, logs, or prompt here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 leading-relaxed resize-y"></textarea>
+
+      <!-- Draggable File Badge & Actions -->
+      <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+        
+        <!-- The Draggable File Target -->
+        <div class="flex items-center gap-3">
+          <div id="drag-file-card" draggable="true" class="cursor-grab active:cursor-grabbing flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-900/60 to-violet-900/60 hover:from-indigo-900/80 hover:to-violet-900/80 border border-indigo-500/40 text-white shadow-lg transition active:scale-95 group">
+            <i data-lucide="file-code" class="w-5 h-5 text-indigo-400 group-hover:scale-110 transition"></i>
+            <div>
+              <div id="drag-file-label" class="text-xs font-bold font-mono text-indigo-200">clipboard_data.txt</div>
+              <div class="text-[10px] text-slate-400 flex items-center gap-1">
+                <i data-lucide="move" class="w-2.5 h-2.5"></i>
+                <span>Drag me into Gemini Web!</span>
+              </div>
+            </div>
+          </div>
+          <span class="text-xs text-slate-400 hidden sm:inline">← Grab and drag directly into any web chat!</span>
+        </div>
+
+        <!-- Download as file button -->
+        <button id="btn-download" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700 text-xs font-medium text-slate-200 hover:text-white transition">
+          <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+          <span>Download File</span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Gemini Web Bookmarklet Helper -->
+    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+      <div class="flex items-center gap-2 text-sm font-semibold text-slate-200">
+        <i data-lucide="bookmark" class="w-4 h-4 text-amber-400"></i>
+        <span>Gemini Web 1-Click Bookmarklet</span>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Want to paste your clipboard as a file directly while you are on <strong class="text-white">gemini.google.com</strong>? Drag the button below up to your browser bookmarks bar! Whenever you are on Gemini Web, click the bookmark (or press its shortcut) to turn whatever is on your clipboard into an attached file automatically:
+      </p>
+
+      <div class="pt-2 flex items-center gap-3">
+        <a id="bookmarklet-link" href="#" class="cursor-grab inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-semibold shadow-md transition">
+          <i data-lucide="paperclip" class="w-4 h-4"></i>
+          <span>📎 Paste as File in Gemini</span>
+        </a>
+        <span class="text-xs text-slate-400">(Drag this link to your Bookmarks Bar)</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs shadow-2xl">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-msg">Success</span>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const fileNameInput = document.getElementById('file-name-input');
+    const fileExtSelect = document.getElementById('file-ext-select');
+    const textInput = document.getElementById('text-input');
+    const dragCard = document.getElementById('drag-file-card');
+    const dragLabel = document.getElementById('drag-file-label');
+    const btnPaste = document.getElementById('btn-paste');
+    const btnClear = document.getElementById('btn-clear');
+    const btnDownload = document.getElementById('btn-download');
+    const bookmarkletLink = document.getElementById('bookmarklet-link');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-msg');
+
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.classList.remove('opacity-0', 'translate-y-12', 'pointer-events-none');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-12', 'pointer-events-none');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 2500);
+    }
+
+    function getFullFileName() {
+      const base = fileNameInput.value.trim() || 'clipboard_data';
+      const ext = fileExtSelect.value;
+      return `${base}.${ext}`;
+    }
+
+    function updateDragLabel() {
+      dragLabel.textContent = getFullFileName();
+    }
+
+    fileNameInput.addEventListener('input', updateDragLabel);
+    fileExtSelect.addEventListener('change', updateDragLabel);
+
+    // Auto-detect extension based on text content
+    function detectExtension(text) {
+      const trimmed = text.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) return 'json';
+      if (/^(def |class |import |from \w+ import)/m.test(trimmed)) return 'py';
+      if (/^(import React|export default|function |const |let |var )/m.test(trimmed)) return 'js';
+      if (/^(<!DOCTYPE html|<html)/m.test(trimmed)) return 'html';
+      if (/^(SELECT |INSERT INTO |CREATE TABLE )/im.test(trimmed)) return 'sql';
+      if (/^(# |---\n)/m.test(trimmed)) return 'md';
+      return 'txt';
+    }
+
+    // Paste from clipboard
+    btnPaste.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          textInput.value = text;
+          const detected = detectExtension(text);
+          fileExtSelect.value = detected;
+          updateDragLabel();
+          showToast(`Pasted! Prepared as ${getFullFileName()}`);
+        } else {
+          showToast('Clipboard is empty');
+        }
+      } catch (err) {
+        showToast('Press Ctrl+V to paste into the text box');
+      }
+    });
+
+    // Clear
+    btnClear.addEventListener('click', () => {
+      textInput.value = '';
+      showToast('Cleared');
+    });
+
+    // Download file
+    btnDownload.addEventListener('click', () => {
+      const content = textInput.value;
+      if (!content) {
+        showToast('Please paste or type content first');
+        return;
+      }
+      const filename = getFullFileName();
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`Downloaded ${filename}`);
+    });
+
+    // Drag and drop setup for web browsers
+    dragCard.addEventListener('dragstart', (e) => {
+      const content = textInput.value || ' ';
+      const filename = getFullFileName();
+      const mime = 'text/plain';
+
+      // Setup standard web drag data
+      e.dataTransfer.setData('text/plain', content);
+      
+      // Setup HTML5 DownloadURL drag format (works across browser tabs & windows!)
+      const blob = new Blob([content], { type: mime });
+      const blobUrl = URL.createObjectURL(blob);
+      e.dataTransfer.setData('DownloadURL', `${mime}:${filename}:${blobUrl}`);
+
+      try {
+        const file = new File([content], filename, { type: mime });
+        e.dataTransfer.items.add(file);
+      } catch (err) {}
+    });
+
+    // Setup Bookmarklet Code
+    const bookmarkletCode = `javascript:(async function(){
+      try {
+        const text = await navigator.clipboard.readText();
+        if(!text){ alert('Clipboard is empty!'); return; }
+        const file = new File([text], 'clipboard.txt', { type: 'text/plain' });
+        const input = document.querySelector('input[type="file"]') || document.querySelector('input[accept*="text"]');
+        if(input){
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          input.files = dt.files;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+          console.log('Attached clipboard as file in Gemini Web!');
+        } else {
+          alert('Could not find file input on this page. Use the Windows worker for automatic Ctrl+V pasting!');
+        }
+      } catch(e) {
+        alert('Clipboard permission denied or error: ' + e.message);
+      }
+    })();`;
+    bookmarkletLink.href = bookmarkletCode.replace(/\s+/g, ' ');
+
+  </script>
+</body>
+</html>

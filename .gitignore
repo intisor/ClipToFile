@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Generated clip files
+clips/*
+!clips/.gitkeep
+
+# Data logs
+data/*
+!data/.gitkeep
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
